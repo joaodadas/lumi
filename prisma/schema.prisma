@@ -8,13 +8,19 @@ datasource db {
 }
 
 model Invoice {
-  id                         Int      @id @default(autoincrement())
-  clientNumber               String
-  referenceMonth             String
-  energyConsumed             Float
-  energySCEEWithoutICMS      Float
-  totalAmount                Float
-  compensatedEnergy          Float
-  publicLightingContribution Float
-  createdAt                  DateTime @default(now())
+  id                     Int      @id @default(autoincrement())
+  clientNumber           String
+  referenceMonth         String
+  energyConsumed         Float
+  energyConsumedValue    Float
+  energySCEEE            Float
+  energySCEEValue        Float
+  compensatedEnergy      Float
+  compensatedEnergyValue Float
+  publicLightingValue    Float
+  totalEnergyConsumption Float
+  totalValueWithoutGD    Float
+  gdSavings              Float
+  pdfFile                Bytes?
+  createdAt              DateTime @default(now())
 }

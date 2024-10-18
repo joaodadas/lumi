@@ -1,28 +1,63 @@
 import { Request, Response } from 'express';
-import { InvoiceService } from '../application/InvoiceService';
+import { ExtractInvoiceService } from '../application/ExtractInvoiceService';
+import fs from 'fs';
 
 export class InvoiceController {
-  private service: InvoiceService;
+  private service: ExtractInvoiceService;
 
   constructor() {
-    this.service = new InvoiceService();
+    this.service = new ExtractInvoiceService();
   }
 
-  async create(req: Request, res: Response): Promise<void> {
+  async uploadInvoices(req: Request, res: Response): Promise<void> {
     try {
-      const invoice = await this.service.createInvoice(req.body);
-      res.status(201).json(invoice);
+      const files = req.files as Express.Multer.File[];
+
+      if (!files || files.length === 0) {
+        res.status(400).json({ error: 'No files were uploaded.' });
+        return;
+      }
+
+      const invoices = [];
+      for (const file of files) {
+        const pdfBuffer = fs.readFileSync(file.path);
+        const invoice = await this.service.extractAndSave(file.path, pdfBuffer);
+        invoices.push(invoice);
+      }
+
+      res.status(201).json(invoices);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to create invoice' });
+      res.status(500).json({ error: error.message });
     }
   }
 
-  async getAll(req: Request, res: Response): Promise<void> {
+  async getInvoiceSummary(req: Request, res: Response): Promise<void> {
     try {
-      const invoices = await this.service.getAllInvoices();
-      res.status(200).json(invoices);
+      const { clientNumber, referenceMonth } = req.query;
+      const invoice = await this.service.getInvoiceSummary(
+        clientNumber as string,
+        referenceMonth as string
+      );
+      res.status(200).json(invoice);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to retrieve invoices' });
+      res.status(404).json({ error: 'Invoice not found.' });
+    }
+  }
+
+  async getInvoicePdf(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const pdfBuffer = await this.service.getInvoicePdf(parseInt(id));
+
+      if (!pdfBuffer) {
+        res.status(404).json({ error: 'PDF not found.' });
+        return;
+      }
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.send(pdfBuffer);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   }
 }

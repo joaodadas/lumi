@@ -1,28 +1,42 @@
 export class Invoice {
-  id: number;
   clientNumber: string;
   referenceMonth: string;
   energyConsumed: number;
-  energySCEEWithoutICMS: number;
-  totalAmount: number;
+  energyConsumedValue: number;
+  energySCEEE: number;
+  energySCEEValue: number;
   compensatedEnergy: number;
-  publicLightingContribution: number;
+  compensatedEnergyValue: number;
+  publicLightingValue: number;
+  totalEnergyConsumption: number;
+  totalValueWithoutGD: number;
+  gdSavings: number;
 
   constructor(
     clientNumber: string,
     referenceMonth: string,
     energyConsumed: number,
-    energySCEEWithoutICMS: number,
-    totalAmount: number,
+    energyConsumedValue: number,
+    energySCEEE: number,
+    energySCEEValue: number,
     compensatedEnergy: number,
-    publicLightingContribution: number
+    compensatedEnergyValue: number,
+    publicLightingValue: number
   ) {
     this.clientNumber = clientNumber;
     this.referenceMonth = referenceMonth;
     this.energyConsumed = energyConsumed;
-    this.energySCEEWithoutICMS = energySCEEWithoutICMS;
-    this.totalAmount = totalAmount;
+    this.energyConsumedValue = energyConsumedValue;
+    this.energySCEEE = energySCEEE;
+    this.energySCEEValue = energySCEEValue;
     this.compensatedEnergy = compensatedEnergy;
-    this.publicLightingContribution = publicLightingContribution;
+    this.compensatedEnergyValue = compensatedEnergyValue;
+    this.publicLightingValue = publicLightingValue;
+
+    // Calculating aggregated values
+    this.totalEnergyConsumption = energyConsumed + energySCEEE;
+    this.totalValueWithoutGD =
+      energyConsumedValue + energySCEEValue + publicLightingValue;
+    this.gdSavings = compensatedEnergyValue;
   }
 }
