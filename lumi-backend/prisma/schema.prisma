@@ -8,19 +8,17 @@ datasource db {
 }
 
 model Invoice {
-  id                     Int      @id @default(autoincrement())
+  id                     Int    @id @default(autoincrement())
   clientNumber           String
   referenceMonth         String
-  energyConsumed         Float
+  energyConsumed         Int
   energyConsumedValue    Float
-  energySCEEE            Float
+  energySCEEE            Int
   energySCEEValue        Float
-  compensatedEnergy      Float
+  compensatedEnergy      Int
   compensatedEnergyValue Float
   publicLightingValue    Float
-  totalEnergyConsumption Float
+  totalEnergyConsumption Int
   totalValueWithoutGD    Float
   gdSavings              Float
-  pdfFile                Bytes?
-  createdAt              DateTime @default(now())
 }

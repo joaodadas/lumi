@@ -1,3 +1,4 @@
+// backend/src/models/Invoice.ts
 export class Invoice {
   clientNumber: string;
   referenceMonth: string;
